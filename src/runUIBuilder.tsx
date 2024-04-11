@@ -4,36 +4,36 @@ import { bitable, UIBuilder, FieldType, ITable, IRecord } from "@lark-base-open/
 export default async function main(uiBuilder: UIBuilder, { t }) {
 
     const currencies = [
-        { label: '￥ 人民币（RMB）', value: '￥' },
-        { label: '$ 美元（USD）', value: '$' },
-        { label: '€ 欧元（EUR）', value: '€' },
-        { label: '¥ 日元（JPY）', value: '¥' },
-        { label: '£ 英镑（GBP）', value: '£' },
+        { label: t('RMB'), value: '￥' },
+        { label: t('USD'), value: '$' },
+        { label: t('EUR'), value: '€' },
+        { label: t('JPY'), value: '¥' },
+        { label: t('GBP'), value: '£' },
         // 可以根据需要添加其他货币
       ];
 
       const units = [
-        { label: '千', value: 0 },
-        { label: '万', value: 1 },
-        { label: '十万', value: 2 },
-        { label: '百万', value: 3 },
-        { label: '千万', value: 4 },
-        { label: '亿', value: 5 },
-        { label: '十亿', value: 6 },
-        { label: '百亿', value: 7 },
-        { label: '千亿', value: 8 },
-        { label: '兆', value: 9 },
+        { label: t('K_thousand'), value: 0 },
+        { label: t('M_ten_thousand'), value: 1 },
+        { label: t('T_hundred_thousand'), value: 2 },
+        { label: t('B_million'), value: 3 },
+        { label: t('T_million'), value: 4 },
+        { label: t('B_billion'), value: 5 },
+        { label: t('T_billion'), value: 6 },
+        { label: t('H_billion'), value: 7 },
+        { label: t('Q_billion'), value: 8 },
+        { label: t('T_trillion'), value: 9 },
     ];
 
     uiBuilder.form((form) => ({
         formItems: [
-            form.tableSelect('table', { label: '选择表格' }),
-            form.fieldSelect('targetField', { label: '目标字段', sourceTable: 'table', filterByTypes: [FieldType.Number] }),
-            form.fieldSelect('ouputField', { label: '输出字段', sourceTable: 'table', filter: ({ type }) => type === FieldType.Text }),
-            form.select('currency', { label: '选择货币', options: currencies, defaultValue: '￥' }),
-            form.select('unit', { label: '选择金额单位', options: units, defaultValue: 1 }),
+            form.tableSelect('table', { label: t('table') }),
+            form.fieldSelect('targetField', { label: t('targetField'), sourceTable: 'table', filterByTypes: [FieldType.Number] }),
+            form.fieldSelect('ouputField', { label: t('outputField'), sourceTable: 'table', filter: ({ type }) => type === FieldType.Text }),
+            form.select('currency', { label: t('currency'), options: currencies, defaultValue: '￥' }),
+            form.select('unit', { label: t('unit'), options: units, defaultValue: 1 }),
         ],
-        buttons: ['转换'],
+        buttons: [t('convert')],
     }), async ({ key, values }) => {
         const { table, targetField, ouputField, currency, unit } = values;
         // console.log("table: ", table);
@@ -94,8 +94,9 @@ export default async function main(uiBuilder: UIBuilder, { t }) {
     };
 
     const transformData = (fielddata: number, currency: string, unit: number) => {
-        const unitsLabels = ['千', '万', '十万', '百万', '千万', '亿', '十亿', '百亿', '千亿', '兆'];
-        const unitLabel = unitsLabels[unit];
+        // const unitsLabels = ['千', '万', '十万', '百万', '千万', '亿', '十亿', '百亿', '千亿', '兆'];
+        // const unitLabel = unitsLabels[unit];
+        const unitLabel = units.find(u => u.value === unit)?.label || '';
     
         const transformedValue = fielddata / Math.pow(10, (unit + 3)); // 单位转换
         
